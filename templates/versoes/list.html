@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Versões{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Versões</h2>
+    <a href="{{ url_for('create_versao') }}" class="btn btn-success">Nova Versão</a>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Jogo ID</th>
+        <th>Número</th>
+        <th>Data Lançamento</th>
+        <th>Fase</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in versoes %}
+      <tr>
+        <td>{{ v.id_jogo }}</td>
+        <td>{{ v.numero }}</td>
+        <td>{{ v.data_lancamento.strftime('%d/%m/%Y') if v.data_lancamento else '' }}</td>
+        <td>{{ v.fase }}</td>
+        <td>
+          <a href="{{ url_for('edit_versao', id_jogo=v.id_jogo, numero=v.numero) }}" class="btn btn-primary btn-sm">Editar</a>
+          <a href="{{ url_for('delete_versao', id_jogo=v.id_jogo, numero=v.numero) }}" class="btn btn-danger btn-sm"
+             onclick="return confirm('Excluir versão?')">Excluir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if status else 'Novo' }} Status{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>{{ 'Editar' if status else 'Novo' }} Status</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="status_fb" class="form-label">Nome do Status</label>
+      <input type="text" class="form-control" name="status_fb" id="status_fb" required
+             value="{{ status.status_fb if status else '' }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('get_status') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

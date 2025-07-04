@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ usuario and 'Editar' or 'Novo' }} Usuário{% endblock %}
+{% block content %}
+<h2>{{ usuario and 'Editar' or 'Novo' }} Usuário</h2>
+<form method="post" class="mt-3">
+  <div class="mb-3">
+    <label class="form-label">Email</label>
+    <input type="email" name="email" class="form-control" required value="{{ usuario.email if usuario else '' }}">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Gênero</label>
+    <select name="genero" class="form-control" required>
+    <option value="">Selecione</option>
+    <option value="M" {% if usuario and usuario.genero=='M' %}selected{% endif %}>Masculino</option>
+    <option value="F" {% if usuario and usuario.genero=='F' %}selected{% endif %}>Feminino</option>
+    <option value="O" {% if usuario and usuario.genero=='O' %}selected{% endif %}>Outro</option>
+    <option value="N" {% if usuario and usuario.genero=='N' %}selected{% endif %}>Prefiro não informar</option>
+  </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Data de Nascimento</label>
+    <input type="date" name="data_nascimento" class="form-control" required value="{{ usuario.data_nascimento.strftime('%Y-%m-%d') if usuario and usuario.data_nascimento else '' }}">
+  </div>
+  <button type="submit" class="btn btn-primary">Salvar</button>
+</form>
+{% endblock %}

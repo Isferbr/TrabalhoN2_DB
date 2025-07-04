@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if jogo else 'Novo' }} Jogo{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>{{ 'Editar' if jogo else 'Novo' }} Jogo</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="nome_jogo" class="form-label">Nome do Jogo</label>
+      <input type="text" class="form-control" name="nome_jogo" id="nome_jogo" required
+        value="{{ jogo.nome_jogo if jogo else '' }}">
+    </div>
+    <div class="mb-3">
+      <label for="plataforma" class="form-label">Plataforma</label>
+      <input type="text" class="form-control" name="plataforma" id="plataforma" required
+        value="{{ jogo.plataforma if jogo else '' }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{{ url_for('get_jogos') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

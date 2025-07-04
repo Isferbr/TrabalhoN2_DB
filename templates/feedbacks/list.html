@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Feedbacks{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Feedbacks</h2>
+  <a href="{{ url_for('create_feedback') }}" class="btn btn-success">Novo Feedback</a>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th><th>Usuário</th><th>Jogo</th><th>Categoria</th><th>Status</th><th>Nota</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in feedbacks %}
+    <tr>
+      <td>{{ f.id_feedback }}</td>
+      <td>{{ f.id_usuario }}</td>
+      <td>{{ f.id_jogo }}</td>
+      <td>{{ f.categoria.categoria if f.categoria else '' }}</td>
+      <td>{{ f.status.status_fb if f.status else '' }}</td>
+      <td>{{ f.nota }}</td>
+      <td>
+        <a href="{{ url_for('edit_feedback', id=f.id_feedback) }}" class="btn btn-sm btn-primary">Editar</a>
+        <a href="{{ url_for('delete_feedback', id=f.id_feedback) }}" class="btn btn-sm btn-danger" onclick="return confirm('Excluir feedback?')">Excluir</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

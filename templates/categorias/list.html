@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Categorias{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Categorias</h2>
+    <a href="{{ url_for('create_categoria') }}" class="btn btn-success mb-3">Nova Categoria</a>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Categoria</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in categorias %}
+      <tr>
+        <td>{{ c.id_categoria }}</td>
+        <td>{{ c.categoria }}</td>
+        <td>
+          <a href="{{ url_for('edit_categoria', id=c.id_categoria) }}" class="btn btn-primary btn-sm">Editar</a>
+          <a href="{{ url_for('delete_categoria', id=c.id_categoria) }}" class="btn btn-danger btn-sm"
+            onclick="return confirm('Excluir categoria?')">Excluir</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

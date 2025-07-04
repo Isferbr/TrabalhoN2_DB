@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Ranking de Usuários{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Ranking de Usuários</h2>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Total de Feedbacks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i, usuario in ranking %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.total_feedbacks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+</div>
+{% endblock %}

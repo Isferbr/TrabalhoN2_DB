@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Usuários{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Usuários</h2>
+  <a href="{{ url_for('usuario_novo') }}" class="btn btn-success">Novo Usuário</a>
+</div>
+
+<table class="table table-bordered table-striped">
+  <thead><tr><th>ID</th><th>Email</th><th>Gênero</th><th>Nascimento</th><th>Ações</th></tr></thead>
+  <tbody>
+    {% for u in usuarios %}
+    <tr>
+      <td>{{ u.id_usuario }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.genero }}</td>
+      <td>{{ u.data_nascimento.strftime('%d/%m/%Y') if u.data_nascimento }}</td>
+      <td>
+        <a href="{{ url_for('usuario_editar', id=u.id_usuario) }}" class="btn btn-sm btn-primary">Editar</a>
+        <a href="{{ url_for('usuario_excluir', id=u.id_usuario) }}" class="btn btn-sm btn-danger" onclick="return confirm('Excluir este usuário?')">Excluir</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

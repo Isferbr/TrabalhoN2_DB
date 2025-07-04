@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Resumo das Avaliações{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Resumo das Avaliações dos Jogos</h1>
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Jogo</th>
+                <th>Versão</th>
+                <th>Total de Feedbacks</th>
+                <th>Média da Avaliação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for linha in resumo %}
+            <tr>
+                <td>{{ linha.nome_jogo }}</td>
+                <td>{{ linha.versao }}</td>
+                <td>{{ linha.total_feedbacks }}</td>
+                <td>
+                    {% if linha.media_avaliacao %}
+                        {{ "%.2f"|format(linha.media_avaliacao) }}
+                    {% else %}
+                        Nenhuma
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+</div>
+{% endblock %}
