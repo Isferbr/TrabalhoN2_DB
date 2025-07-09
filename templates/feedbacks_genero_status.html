@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Feedbacks por Gênero e Status{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Feedbacks por Gênero e Status</h2>
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Gênero</th>
+                <th>Status</th>
+                <th>Total de Feedbacks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in dados %}
+            <tr>
+                <td>{{ item.genero }}</td>
+                <td>{{ item.tipo_feedback }}</td>
+                <td>{{ item.total_feedbacks }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" class="text-center">Nenhum dado encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+</div>
+{% endblock %}

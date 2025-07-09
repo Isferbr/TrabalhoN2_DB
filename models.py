@@ -47,10 +47,17 @@ class Jogo(db.Model):
 
     id_jogo = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome_jogo = db.Column(db.String(50), nullable=False)
-    plataforma = db.Column(db.String(30), nullable=False)
+    id_plataforma = db.Column(db.Integer, db.ForeignKey('plataforma.id_plataforma'), nullable=False)
 
+    plataforma = db.relationship('Plataforma', backref='jogos', lazy=True)
     versoes = db.relationship('VersaoJogo', backref='jogo', lazy=True)
     feedbacks = db.relationship('Feedback', backref='jogo', lazy=True)
+
+class Plataforma(db.Model):
+    __tablename__ = 'plataforma'
+
+    id_plataforma = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nome = db.Column(db.String(30), nullable=False, unique=True)
 
 # ------------------------------
 # Modelo: VersaoJogo
@@ -133,3 +140,57 @@ def obter_ranking_usuarios():
     ).order_by(
         total_feedbacks.desc()
     ).all()
+
+def get_feedbacks_categoria_plataforma():
+    return (
+        db.session.query(
+            CategoriaFeedback.categoria.label('categoria_feedback'),
+            Plataforma.nome.label('plataforma'),
+            Jogo.nome_jogo,
+            Feedback.descricao,
+            Feedback.nota
+        )
+        .join(Feedback, Feedback.id_categoria == CategoriaFeedback.id_categoria)
+        .join(Jogo, Feedback.id_jogo == Jogo.id_jogo)
+        .join(Plataforma, Jogo.id_plataforma == Plataforma.id_plataforma)
+        .all()
+    )
+
+def get_jogos_por_plataforma():
+    return (
+        db.session.query(
+            Plataforma.nome.label('plataforma'),
+            Jogo.nome_jogo
+        )
+        .join(Jogo, Jogo.id_plataforma == Plataforma.id_plataforma)
+        .order_by(Plataforma.nome, Jogo.nome_jogo)
+        .all()
+    )
+
+def get_feedbacks_por_genero_e_categoria():
+    return (
+        db.session.query(
+            Usuario.genero.label('genero'),
+            CategoriaFeedback.categoria.label('categoria_feedback'),
+            db.func.count().label('total_feedbacks')
+        )
+        .join(Feedback, Feedback.id_usuario == Usuario.id_usuario)
+        .join(CategoriaFeedback, Feedback.id_categoria == CategoriaFeedback.id_categoria)
+        .group_by(Usuario.genero, CategoriaFeedback.categoria)
+        .order_by(Usuario.genero, CategoriaFeedback.categoria)
+        .all()
+    )
+
+def get_feedbacks_por_genero_e_status():
+    return (
+        db.session.query(
+            Usuario.genero.label('genero'),
+            StatusFeedback.status_fb.label('tipo_feedback'),
+            db.func.count().label('total_feedbacks')
+        )
+        .join(Feedback, Feedback.id_usuario == Usuario.id_usuario)
+        .join(StatusFeedback, Feedback.id_status == StatusFeedback.id_status)
+        .group_by(Usuario.genero, StatusFeedback.status_fb)
+        .order_by(Usuario.genero, StatusFeedback.status_fb)
+        .all()
+    )

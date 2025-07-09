@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
-from models import db, Usuario, Jogo, Feedback, CategoriaFeedback, StatusFeedback, VersaoJogo, resumo_avaliacao_jogo, obter_ranking_usuarios
+from models import db, Usuario, Jogo, Feedback, CategoriaFeedback, StatusFeedback, VersaoJogo, resumo_avaliacao_jogo, obter_ranking_usuarios, get_feedbacks_categoria_plataforma, get_jogos_por_plataforma, get_feedbacks_por_genero_e_categoria, get_feedbacks_por_genero_e_status
 import datetime
 
 app = Flask(__name__)
@@ -24,6 +24,26 @@ def resumo_jogos():
 def ranking_usuarios():
     ranking = list(enumerate(obter_ranking_usuarios(), start=1))
     return render_template("ranking.html", ranking=ranking)
+
+@app.route('/feedbacks_list')
+def list_feedbacks():
+    feedbacks = get_feedbacks_categoria_plataforma()
+    return render_template('feedbacks_list.html', feedbacks=feedbacks)
+
+@app.route('/jogos-plataforma')
+def jogos_por_plataforma():
+    jogos = get_jogos_por_plataforma()
+    return render_template('jogos_por_plataforma.html', jogos=jogos)
+
+@app.route('/feedbacks-genero-categoria')
+def feedbacks_genero_categoria():
+    dados = get_feedbacks_por_genero_e_categoria()
+    return render_template('feedbacks_genero_categoria.html', dados=dados)
+
+@app.route('/feedbacks-genero-status')
+def feedbacks_genero_status():
+    dados = get_feedbacks_por_genero_e_status()
+    return render_template('feedbacks_genero_status.html', dados=dados)
 
 # ------------------------------
 # Usuários
