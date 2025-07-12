@@ -3,7 +3,7 @@ from models import db, Usuario, Jogo, Feedback, CategoriaFeedback, StatusFeedbac
 import datetime
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://fbrito:25if#b7a@localhost/wvp"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://admin:1Km7Q5$S@db-wvp.cvemsq2gol4m.us-east-2.rds.amazonaws.com/wvp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
