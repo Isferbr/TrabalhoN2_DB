@@ -5,7 +5,7 @@ from procedures import inserir_jogo_com_versao, atualizar_feedbacks_lote
 from cards_data import cards
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://fbrito:25if#b7a@localhost/wvp"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://admin:1Km7Q5$S@localhost/wvp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
