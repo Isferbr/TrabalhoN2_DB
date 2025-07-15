@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Versões de {{ nome_jogo }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Versões do Jogo: <strong>{{ nome_jogo }}</strong></h2>
+  <a href="{{ url_for('buscar_versoes_form') }}" class="btn btn-success">Nova Consulta</a>
+</div>
+
+{% if mensagem %}
+<div class="alert alert-warning">{{ mensagem }}</div>
+{% else %}
+<table class="table table-bordered table-striped mt-3">
+  <thead class="table-dark">
+    <tr>
+      <th>Versão</th>
+      <th>Data de Lançamento</th>
+      <th>Fase</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in versoes %}
+    <tr>
+      <td>{{ v.numero }}</td>
+      <td>{{ v.data_lancamento.strftime('%d/%m/%Y') if v.data_lancamento else '---' }}</td>
+      <td>{{ v.fase }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+{% endblock %}

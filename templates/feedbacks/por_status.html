@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Feedbacks com Status {{ id_status }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Feedbacks com Status ID {{ id_status }}</h2>
+  <a href="{{ url_for('buscar_feedbacks_por_status_form') }}" class="btn btn-success">Nova Consulta</a>
+</div>
+
+{% if feedbacks %}
+<table class="table table-striped table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>ID Feedback</th>
+      <th>ID Usuário</th>
+      <th>ID Categoria</th>
+      <th>ID Status</th>
+      <th>ID Jogo</th>
+      <th>Descrição</th>
+      <th>Nota</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in feedbacks %}
+    <tr>
+      <td>{{ f.id_feedback }}</td>
+      <td>{{ f.id_usuario }}</td>
+      <td>{{ f.id_categoria }}</td>
+      <td>{{ f.id_status }}</td>
+      <td>{{ f.id_jogo }}</td>
+      <td>{{ f.descricao }}</td>
+      <td>{{ f.nota }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">Nenhum feedback encontrado com esse status.</div>
+{% endif %}
+
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+{% endblock %}

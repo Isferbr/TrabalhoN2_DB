@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Página Inicial{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron mt-4">
+        <h1 class="display-4">Bem-vindo ao Sistema de Feedback!</h1>
+        <p class="lead">Gerencie usuários, jogos e feedbacks de forma simples e eficiente.</p>
+        <hr class="my-4">
+        <p>Comece explorando os recursos disponíveis no menu de navegação.</p>
+
+        <div class="row mt-5">
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Resumo das Avaliações</h5>
+                        <p class="card-text">Veja as estatísticas de feedback dos jogos.</p>
+                        <a href="{{ url_for('resumo_jogos') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Ranking de Usuários</h5>
+                        <p class="card-text">Veja quem mais enviou feedbacks no sistema.</p>
+                        <a href="{{ url_for('ranking_usuarios') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Feedbacks por Categoria e Plataforma</h5>
+                        <p class="card-text">Visualize os feedbacks organizados por categoria e plataforma.</p>
+                        <a href="{{ url_for('list_feedbacks') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Jogos por Plataforma</h5>
+                        <p class="card-text">Veja todos os jogos agrupados por plataforma.</p>
+                        <a href="{{ url_for('jogos_por_plataforma') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Feedbacks por Gênero e Categoria</h5>
+                        <p class="card-text">Visualize o total de feedbacks agrupados por gênero e tipo.</p>
+                        <a href="{{ url_for('feedbacks_genero_categoria') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card h-100 w-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Feedbacks por Gênero e Status</h5>
+                        <p class="card-text">Visualize o total de feedbacks por gênero e status atual.</p>
+                        <a href="{{ url_for('feedbacks_genero_status') }}" class="btn btn-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

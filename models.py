@@ -194,3 +194,20 @@ def get_feedbacks_por_genero_e_status():
         .order_by(Usuario.genero, StatusFeedback.status_fb)
         .all()
     )
+
+def buscar_versoes_por_nome_jogo(nome_jogo):
+    return (
+        db.session.query(
+            Jogo.nome_jogo,
+            VersaoJogo.numero,
+            VersaoJogo.data_lancamento,
+            VersaoJogo.fase
+        )
+        .join(VersaoJogo, Jogo.id_jogo == VersaoJogo.id_jogo)
+        .filter(Jogo.nome_jogo == nome_jogo)
+        .order_by(VersaoJogo.numero)
+        .all()
+    )
+
+def buscar_feedbacks_por_status(id_status):
+    return Feedback.query.filter_by(id_status=id_status).all()

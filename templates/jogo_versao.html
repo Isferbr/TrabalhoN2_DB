@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="mt-4 mb-3">Cadastrar Jogo com Versão</h2>
+
+{% if mensagem %}
+  <div class="alert alert-success">{{ mensagem }}</div>
+{% endif %}
+{% if erros %}
+  <div class="alert alert-danger">
+    <ul>
+      {% for erro in erros %}
+        <li>{{ erro }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+<form method="post">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome do Jogo</label>
+    <input type="text" class="form-control" id="nome" name="nome" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="nome_plataforma" class="form-label">Plataforma</label>
+    <select class="form-select" id="nome_plataforma" name="nome_plataforma" required>
+      <option value="" disabled selected>Selecione a plataforma</option>
+      {% for plataforma in plataformas %}
+        <option value="{{ plataforma.nome }}">{{ plataforma.nome }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label for="versao" class="form-label">Versão</label>
+    <input type="text" class="form-control" id="versao" name="versao" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="data_lancamento_jogo" class="form-label">Data de Lançamento</label>
+    <input type="date" class="form-control" id="data_lancamento_jogo" name="data_lancamento_jogo" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="fase_jogo" class="form-label">Fase</label>
+    <select class="form-select" id="fase_jogo" name="fase_jogo" required>
+      <option value="alpha">Alpha</option>
+      <option value="beta">Beta</option>
+      <option value="gold">Gold</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Cadastrar</button>
+</form>
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+{% endblock %}

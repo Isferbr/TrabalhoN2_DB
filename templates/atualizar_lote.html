@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Atualizar Feedbacks em Lote{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Atualizar Status de Feedbacks em Lote</h1>
+
+  {% if mensagem %}
+    <div class="alert alert-success">{{ mensagem }}</div>
+  {% endif %}
+
+  {% if erros %}
+    <div class="alert alert-danger">
+      <ul>
+        {% for erro in erros %}
+          <li>{{ erro }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post">
+    <div class="mb-3">
+      <label for="id_status_anterior" class="form-label">ID do Status Atual</label>
+      <input type="number" class="form-control" id="id_status_anterior" name="id_status_anterior" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_status_novo" class="form-label">ID do Novo Status</label>
+      <input type="number" class="form-control" id="id_status_novo" name="id_status_novo" required>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Atualizar em Lote</button>
+  </form>
+  <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar à Página Inicial</a>
+{% endblock %}

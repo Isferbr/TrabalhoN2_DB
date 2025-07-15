@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request
-from models import db, Usuario, Jogo, Feedback, CategoriaFeedback, StatusFeedback, VersaoJogo, resumo_avaliacao_jogo, obter_ranking_usuarios, get_feedbacks_categoria_plataforma, get_jogos_por_plataforma, get_feedbacks_por_genero_e_categoria, get_feedbacks_por_genero_e_status
-import datetime
+from models import db, Usuario, Jogo, Plataforma, Feedback, CategoriaFeedback, StatusFeedback, VersaoJogo, resumo_avaliacao_jogo, obter_ranking_usuarios, get_feedbacks_categoria_plataforma, get_jogos_por_plataforma, get_feedbacks_por_genero_e_categoria, get_feedbacks_por_genero_e_status, buscar_versoes_por_nome_jogo, buscar_feedbacks_por_status
+from datetime import date, datetime
+from procedures import inserir_jogo_com_versao, atualizar_feedbacks_lote
+from cards_data import cards
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://admin:1Km7Q5$S@db-wvp.cvemsq2gol4m.us-east-2.rds.amazonaws.com/wvp"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+mysqlconnector://fbrito:25if#b7a@localhost/wvp"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 
@@ -13,7 +15,7 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', cards=cards)
 
 @app.route('/resumo_jogos')
 def resumo_jogos():
@@ -44,6 +46,107 @@ def feedbacks_genero_categoria():
 def feedbacks_genero_status():
     dados = get_feedbacks_por_genero_e_status()
     return render_template('feedbacks_genero_status.html', dados=dados)
+
+@app.route('/jogo_versao', methods=['GET', 'POST'])
+def cadastrar_jogo_versao():
+    mensagem = None
+    erros = []
+    plataformas = Plataforma.query.order_by(Plataforma.nome).all()
+
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        nome_plataforma = request.form.get('nome_plataforma')
+        versao = request.form.get('versao')
+        data_lancamento_str = request.form.get('data_lancamento_jogo')
+        fase_jogo = request.form.get('fase_jogo')
+
+        # Validação simples
+        if not all([nome, nome_plataforma, versao, data_lancamento_str, fase_jogo]):
+            erros.append("Todos os campos são obrigatórios.")
+        else:
+            try:
+                # Verificar se a plataforma existe
+                plataforma_existente = Plataforma.query.filter_by(nome=nome_plataforma).first()
+                if not plataforma_existente:
+                    erros.append(f"A plataforma '{nome_plataforma}' não foi encontrada no banco de dados.")
+                else:
+                    # Validar e converter a data
+                    try:
+                        data_lancamento = datetime.strptime(data_lancamento_str, '%Y-%m-%d').date()
+                    except ValueError:
+                        erros.append("A data de lançamento deve estar no formato YYYY-MM-DD.")
+                        data_lancamento = None
+
+                    if not erros:
+                        # Inserir o jogo com versão no banco
+                        inserir_jogo_com_versao(nome, nome_plataforma, versao, data_lancamento, fase_jogo)
+                        mensagem = "Jogo e versão inseridos com sucesso."
+
+            except Exception as e:
+                erros.append(f"Ocorreu um erro inesperado: {str(e)}")
+
+    return render_template('jogo_versao.html',
+                           mensagem=mensagem,
+                           erros=erros,
+                           plataformas=plataformas)
+
+@app.route('/atualizar_lote', methods=['GET', 'POST'])
+def atualizar_status_em_lote():
+    mensagem = None
+    erros = []
+
+    if request.method == 'POST':
+        try:
+            id_status_anterior = int(request.form.get('id_status_anterior'))
+            id_status_novo = int(request.form.get('id_status_novo'))
+
+            if id_status_anterior == id_status_novo:
+                erros.append("Os status devem ser diferentes.")
+            else:
+                atualizar_feedbacks_lote(id_status_anterior, id_status_novo)
+                mensagem = "Feedbacks atualizados com sucesso!"
+        except Exception as e:
+            erros.append(f"Erro ao atualizar: {str(e)}")
+
+    return render_template('atualizar_lote.html', mensagem=mensagem, erros=erros)
+
+@app.route('/versoes/<nome_jogo>')
+def versoes_por_jogo(nome_jogo):
+    versoes = buscar_versoes_por_nome_jogo(nome_jogo)
+    if not versoes:
+        mensagem = f"Nenhuma versão encontrada para o jogo '{nome_jogo}'."
+    else:
+        mensagem = None
+    return render_template('versoes/por_jogo.html', nome_jogo=nome_jogo, versoes=versoes, mensagem=mensagem)
+
+@app.route('/buscar_versoes', methods=['GET', 'POST'])
+def buscar_versoes_form():
+    if request.method == 'POST':
+        nome_jogo = request.form.get('nome_jogo')
+        if not nome_jogo:
+            flash('Informe o nome do jogo para buscar.', 'warning')
+            return redirect(url_for('buscar_versoes_form'))
+        return redirect(url_for('versoes_por_jogo', nome_jogo=nome_jogo))
+    return render_template('versoes/buscar_form.html')
+
+@app.route('/feedbacks/status/<int:id_status>')
+def feedbacks_por_status(id_status):
+    feedbacks = buscar_feedbacks_por_status(id_status)
+    return render_template('feedbacks/por_status.html', feedbacks=feedbacks, id_status=id_status)
+
+# Formulário para consultar feedbacks
+@app.route('/consultar_feedbacks_status', methods=['GET', 'POST'])
+def buscar_feedbacks_por_status_form():
+    if request.method == 'POST':
+        id_status = request.form.get('id_status')
+
+        if not id_status or not id_status.isdigit():
+            flash("Por favor, insira um ID de status válido.", "danger")
+            return redirect(url_for('buscar_feedbacks_por_status_form'))
+
+        return redirect(url_for('feedbacks_por_status', id_status=int(id_status)))
+
+    return render_template('feedbacks/form_status.html')
 
 # ------------------------------
 # Usuários
@@ -174,8 +277,8 @@ def get_jogos():
 def create_jogo():
     if request.method == 'POST':
         nome_jogo = request.form['nome_jogo']
-        plataforma = request.form['plataforma']
-        novo_jogo = Jogo(nome_jogo=nome_jogo, plataforma=plataforma)
+        plataforma = int(request.form['plataforma'])
+        novo_jogo = Jogo(nome_jogo=nome_jogo, id_plataforma=plataforma)
         db.session.add(novo_jogo)
         db.session.commit()
         return redirect(url_for('get_jogos'))

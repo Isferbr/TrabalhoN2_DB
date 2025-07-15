@@ -248,3 +248,74 @@ SELECT * FROM feedback;
 -- Ignorem: verificar dados --
 
 SELECT * FROM jogo;
+
+-- Transações acopladas a Procedures 
+-- Trasação: Ao inserir novo jogo adicionae a versão.
+
+DELIMITER //
+CREATE PROCEDURE jogo_versao (
+    IN nome_jogo VARCHAR(50),
+    IN nome_plataforma VARCHAR(30),
+    IN numero_versao VARCHAR(10),
+    IN data_lancamento DATE,
+    IN fase_jogo ENUM('alpha', 'beta', 'gold')
+)
+BEGIN
+    DECLARE id_plat INT;
+
+    -- Buscar o ID da plataforma
+    SELECT id_plataforma INTO id_plat
+    FROM plataforma
+    WHERE nome = nome_plataforma;
+
+    -- Inserir jogo
+    INSERT INTO jogo (nome_jogo, id_plataforma)
+    VALUES (nome_jogo, id_plat);
+
+    -- Recuperar o ID do jogo recém-inserido
+    SET @id_jogo := LAST_INSERT_ID();
+
+    -- Inserir versão do jogo
+    INSERT INTO versao_jogo (id_jogo, numero, data_lancamento, fase)
+    VALUES (@id_jogo, numero_versao, data_lancamento, fase_jogo);
+END //
+DELIMITER ;
+
+-- Testes--
+SHOW CREATE PROCEDURE jogo_versao;
+SELECT * FROM jogo;
+SELECT * FROM versao_jogo;
+CALL jogo_versao('Jogo D', 'PC', '1.0','2025-06-12', 'alpha');
+SELECT * FROM jogo WHERE nome_jogo = 'Jogo D';
+SELECT * FROM versao_jogo WHERE id_jogo = (SELECT id_jogo FROM jogo WHERE nome_jogo = 'Jogo D');
+
+-- Transação: Atualizar em lote o status de feedbacks.
+
+DELIMITER //
+CREATE PROCEDURE feedbacks_lote (
+  IN id_status_anterior INT,
+  IN id_status_novo INT
+)
+BEGIN
+  START TRANSACTION;
+	  UPDATE feedback
+	  SET id_status = id_status_novo
+	  WHERE id_status = id_status_anterior;
+  COMMIT;
+END 
+//DELIMITER ;
+
+-- Testes --
+SELECT * FROM feedback WHERE id_status = 1;
+CALL feedbacks_lote(1, 2);
+SELECT * FROM feedback WHERE id_status = 2;
+
+SHOW PROCEDURE STATUS WHERE Db = 'wvp';
+DESCRIBE jogo;
+SELECT * FROM plataforma WHERE nome = 'PC';
+SELECT id_plataforma, nome FROM plataforma WHERE nome = 'PC';
+
+SELECT * FROM plataforma ORDER BY nome;
+
+SHOW CREATE PROCEDURE jogo_versao;
+DESCRIBE Plataforma;
